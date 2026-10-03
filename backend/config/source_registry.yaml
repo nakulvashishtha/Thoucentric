@@ -15,6 +15,7 @@ global:
           "substack.com", "*.substack.com", "wikipedia.org", "*.wikipedia.org", "linkedin.com"]
 countries:
   IN:
+    names: [India, Bharat]
     tier1: ["rbi.org.in", "*.rbi.org.in", "*.gov.in", "*.nic.in", "sebi.gov.in", "mospi.gov.in",
             "irdai.gov.in", "trai.gov.in", "bseindia.com", "nseindia.com", "mca.gov.in", "pib.gov.in"]
     tier2: ["npci.org.in", "iba.org.in", "ficci.in", "cii.in", "nasscom.in", "assocham.org", "crisil.com",
