@@ -621,7 +621,8 @@ async def link_and_derive(case: Case, eid: str, hs: dict, needs: dict, step: int
         r = convert.derive(d.op, float(av), a.get("unit", ""), float(bv), b.get("unit", ""), d.result_unit, d.years,
                            a.get("period"), b.get("period"))
         verified = bool(a.get("verified") and b.get("verified") and r.value is not None)
-        figs.append({"value": r.value, "unit": d.result_unit, "period": f"{a.get('period', '')} to {b.get('period', '')}".strip(" to"),
+        pa, pb = a.get("period", ""), b.get("period", "")
+        figs.append({"value": r.value, "unit": d.result_unit, "period": pa if pa == pb else f"{pa} to {pb}".strip(" to"),
                      "kind": "calculated", "quote_span": "", "locator": "", "verified": verified,
                      "verify_note": "recomputed from its stored inputs" if verified else "inputs not verified",
                      "derivation": {"op": d.op, "input_figure_refs": [d.a_ref, d.b_ref], "years": d.years,

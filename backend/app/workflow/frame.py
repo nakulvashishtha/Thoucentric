@@ -75,7 +75,7 @@ def add_file(case_id: int, filename: str, data: bytes, kind: str = "initial", tr
         s.commit()
         fid = f.id
     actor = "expert" if kind == "expert_note" else "client" if kind in ("initial", "followup") else "consultant"
-    activity.log(case_id, actor, "file_uploaded", 1 if kind == "initial" else 5,
+    activity.log(case_id, actor, "file_uploaded", 1 if kind == "initial" else 9 if trip_id else 5,
                  f"File received: {filename} ({kind.replace('_', ' ')}); uploaded by the consultant",
                  {"file_id": fid})
     return fid
@@ -339,7 +339,12 @@ def edit_hypotheses(case_id: int, rows: list[dict]) -> None:
                     if k == "removed_reason" and v is not None and not str(v).strip():
                         raise BadInput("Removing an idea needs a reason")
                     setattr(h, k, v)
-                    changes.append(f"{h.code} {k.replace('_json', '').replace('_', ' ')}")
+                    if k == "removed_reason":
+                        changes.append(f"removed {h.code} ({v})" if v else f"restored {h.code}")
+                    elif k == "must_have":
+                        changes.append(f"{h.code} {'is now' if v else 'is no longer'} a must-have")
+                    else:
+                        changes.append(f"changed {h.code} {k.replace('_json', '').replace('_', ' ')}")
             s.add(h)
         s.commit()
     if changes:

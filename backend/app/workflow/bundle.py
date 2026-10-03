@@ -125,8 +125,16 @@ def build(case_id: int) -> dict:
         "progress": progress, "review": review, "counts": counts,
         "jobs": latest, "running_jobs": running,
         "sliders": slider_rows,
+        "sample_replies": _sample_replies(case),
         "rules": {"thresholds": rules(), "adding_up_rule": rules()["adding_up_rule"]},
     }
+
+
+def _sample_replies(case) -> dict:
+    pack = C.pack_for(case)
+    if not pack:
+        return {}
+    return {k: v.get("reply_file") for k, v in (pack["case"].get("trips") or {}).items() if v.get("reply_file")}
 
 
 def _claim(e: EvidenceItem) -> str:
@@ -136,7 +144,8 @@ def _claim(e: EvidenceItem) -> str:
     f = figs[0]
     val = f.get("value")
     num = (f"{val:g}" if val is not None else f"{f.get('low'):g} to {f.get('high'):g}")
-    return f"{num} {f.get('unit', '')}".strip() + (f" ({f['period']})" if f.get("period") else "")
+    unit = (f.get("unit") or "").strip()
+    return (f"{num}{unit}" if unit.startswith("%") else f"{num} {unit}").strip() + (f" ({f['period']})" if f.get("period") else "")
 
 
 def case_list() -> list[dict]:

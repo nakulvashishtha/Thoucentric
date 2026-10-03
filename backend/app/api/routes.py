@@ -319,6 +319,17 @@ def load_sample(name: str):
     return {"id": cid}
 
 
+@router.get("/samples/{name}/replies/{filename}")
+def sample_reply(name: str, filename: str):
+    """A sample pack's simulated reply file, so a demo can play the client's answer at step 9."""
+    try:
+        data = samples.file_bytes(name, filename, "replies")
+    except KeyError:
+        raise BadInput("No such sample reply")
+    return Response(data, media_type="application/octet-stream",
+                    headers={"Content-Disposition": f'attachment; filename="{filename}"'})
+
+
 @router.get("/settings")
 def get_settings():
     mode, notice = effective_mode()
